@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/turnBluetootheOff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="20dp"
+        android:onClick="turnBluetoothOff"
+        android:text="Turn bluetooth off"
+        android:layout_marginLeft="20dp"
+        android:layout_alignParentLeft="true" />
+
+    <Button
+        android:id="@+id/findDiscoverableDevices"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/turnBluetootheOff"
+        android:layout_below="@+id/turnBluetootheOff"
+        android:layout_marginTop="20dp"
+        android:onClick="findDiscoverableDevices"
+        android:text="Find discoverable devices"
+        android:layout_alignLeft="@+id/turnBluetootheOff" />
+
+    <Button
+        android:id="@+id/viewPairedDevices"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:onClick="viewPairedDevices"
+        android:text="View paired devices"
+        android:layout_below="@+id/findDiscoverableDevices"
+        android:layout_alignStart="@+id/findDiscoverableDevices"
+        android:layout_alignLeft="@+id/findDiscoverableDevices" />
+
+    <ListView
+        android:id="@+id/pairedDeviceListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/viewPairedDevices"
+        android:layout_marginTop="13dp"
+        android:layout_alignParentLeft="true"
+        android:choiceMode="singleChoice"
+        android:listSelector="@android:color/darker_gray"/>
+
+    <Button
+        android:id="@+id/connectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/findDiscoverableDevices"
+        android:layout_marginLeft="29dp"
+        android:layout_marginStart="29dp"
+        android:layout_toEndOf="@+id/findDiscoverableDevices"
+        android:layout_toRightOf="@+id/findDiscoverableDevices"
+        android:onClick="connectDevice"
+        android:text="Connect" />
+
+</RelativeLayout>
