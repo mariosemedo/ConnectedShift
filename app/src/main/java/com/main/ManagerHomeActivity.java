@@ -49,11 +49,12 @@ public class ManagerHomeActivity extends AppCompatActivity implements GeoTask.Ge
         String value = intent.getStringExtra("Username"); //if it's a string you stored.
 
 
-        final ArrayList<String> myDrivers = new ArrayList<String>(asList(""));
-        final ArrayList<String> driverUsernames = new ArrayList<String>(asList(""));
+        final ArrayList<String> driversName = new ArrayList<>();
+        final ArrayList<String> driversUsername = new ArrayList<>();
+        final ArrayList<String> driversStatus = new ArrayList<>();
 
 
-        //final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myDrivers);
+        //final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, driversName);
 
         //driverListView.setAdapter(arrayAdapter);
         driverListView = (ListView) findViewById(R.id.list_view);
@@ -62,15 +63,20 @@ public class ManagerHomeActivity extends AppCompatActivity implements GeoTask.Ge
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
                 Intent driverIntent = new Intent(ManagerHomeActivity.this, MapsActivity.class);
-                Collections.sort(driverUsernames);
+                Collections.sort(driversUsername);
 
-                driverIntent.putExtra("username", driverUsernames.get(position+1));
+                driverIntent.putExtra("username", driversUsername.get(position));
 
-                // Log.i("driver", driverUsernames.get(position));
-                // Log.i("driver", driverUsernames.toString());
-                // Log.i("driver", myDrivers.toString());
-                ManagerHomeActivity.this.startActivity(driverIntent);
-                Toast.makeText(getApplicationContext(), myDrivers.get(position),Toast.LENGTH_LONG ).show();
+                // Log.i("driver", driversUsername.get(position));
+                // Log.i("driver", driversUsername.toString());
+                // Log.i("driver", driversName.toString());
+                if (driversStatus.get(position).equals("Offline")) {
+                    Toast.makeText(getApplicationContext(), driversName.get(position) + " is offline", Toast.LENGTH_SHORT).show();
+                } else {
+                    ManagerHomeActivity.this.startActivity(driverIntent);
+                    Log.i("ManagerHome", driversName.toString() + "   " + position);
+                    Toast.makeText(getApplicationContext(), driversName.get(position) + " is " + driversStatus.get(position), Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -92,12 +98,17 @@ public class ManagerHomeActivity extends AppCompatActivity implements GeoTask.Ge
 
                             users.get(i).put("status",getDriverStatus(geoPoint.toString())); // not saving in database
 
+
                             HashMap<String, String> hm = new HashMap<>();
                             hm.put("driver_image", Integer.toString(R.drawable.delivery_man));
                             hm.put("driver_name", users.get(i).get("name").toString());
-                            hm.put("driver_status", users.get(i).get("status").toString());
+                            String status = users.get(i).get("status").toString();
+                            hm.put("driver_status", status);
 
-                            String string = strings[e];
+                            if (!status.equals("Offline")) {
+                                hm.put("vehicle_status", users.get(i).get("vehicleStatus").toString());
+                            }
+                            /*String string = strings[e];
                             switch (e){
                                 case 0:
                                     hm.put("driver_driving", string);
@@ -119,12 +130,14 @@ public class ManagerHomeActivity extends AppCompatActivity implements GeoTask.Ge
                                     hm.put("driver_slow","");
                                     hm.put("driver_stationary","");
                                     break;
-                            }
+                            }*/
                             driversMap.add(hm);
                             e++;
 
                             //arrayAdapter.add(users.get(i).get("name").toString());
-                            driverUsernames.add(i, users.get(i).getUsername());
+                            driversUsername.add(users.get(i).getUsername());
+                            driversName.add(users.get(i).get("name").toString());
+                            driversStatus.add(status);
                         }
                     }
                     createListView();
@@ -132,39 +145,12 @@ public class ManagerHomeActivity extends AppCompatActivity implements GeoTask.Ge
             }
         });
 
-
-
-       /* ParseQuery<ParseUser> parseQuery = ParseUser.getQuery();
-        parseQuery.findInBackground(new FindCallback<ParseUser>() {
-            @Override
-            public void done(List<ParseUser> users, ParseException exception) {
-
-                if(users != null){
-
-                    for(int i = 0; i < users.size(); i++){
-
-                        if(users.get(i).get("jobRole").toString().equals("driver")) {
-
-                            ParseGeoPoint geoPoint = users.get(i).getParseGeoPoint("location");
-
-
-
-                        }
-                    }
-                }
-            }
-        });
-*/
-
-
-        //getDriverLocation();
-
     }
 
     public void createListView() {
 
-        String[] from = {"driver_image", "driver_name", "driver_status", "driver_driving", "driver_slow", "driver_stationary"};
-        int[] to = {R.id.driver_image, R.id.driver_name, R.id.driver_status, R.id.driving, R.id.slowpace, R.id.stationary};
+        String[] from = {"driver_image", "driver_name", "driver_status", "vehicle_status", "driver_slow", "driver_stationary"};
+        int[] to = {R.id.driver_image, R.id.driver_name, R.id.driver_status, R.id.vehicle_status};
 
         SimpleAdapter simpleAdapter = new SimpleAdapter(getBaseContext(), driversMap, R.layout.layout_listview, from, to);
         driverListView.setAdapter(simpleAdapter);

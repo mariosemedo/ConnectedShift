@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.main.DriverHomeActivity">
 
-    <com.parse.starter.Gauge
+    <com.main.Gauge
         android:id="@+id/gauge2"
         android:layout_width="291dp"
         android:layout_height="257dp"

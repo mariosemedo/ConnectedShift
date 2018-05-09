@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.robinhood.ticker.TickerUtils;
@@ -447,30 +448,40 @@ public class DriverHomeActivity extends AppCompatActivity {
         });
     }
 
+    static int currentStatus = -1;
     private void setVehicleStatus(int status){
 
         ParseUser user = ParseUser.getCurrentUser();
 
         Log.i("DriverHome", "VehicleStatus: " + String.valueOf(status));
 
-        switch (status){
-            case 0:
-                user.put("vehicleStatus", "Unknown");
-                break;
-            case 1:
-                user.put("vehicleStatus", "Stopped");
-                break;
-            case 2:
-                user.put("vehicleStatus", "Stationary");
-                break;
-            case 3:
-                user.put("vehicleStatus", "Driving");
-                break;
-            default:
-                user.put("vehicleStatus", "N/A");
-                break;
-        }
+        if (status != currentStatus) {
+            currentStatus = status;
+            Log.i("DriverHome", "VehicleStatus updated");
+            switch (status) {
+                case 0:
+                    user.put("vehicleStatus", "Unknown");
+                    break;
+                case 1:
+                    user.put("vehicleStatus", "Stopped");
+                    break;
+                case 2:
+                    user.put("vehicleStatus", "Stationary");
+                    break;
+                case 3:
+                    user.put("vehicleStatus", "Driving");
+                    break;
+                default:
+                    user.put("vehicleStatus", "N/A");
+                    break;
+            }
 
+            try {
+                user.save();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void setUserScore(int time, int speed){
