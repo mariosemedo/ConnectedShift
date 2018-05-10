@@ -96,6 +96,7 @@ public class ManagerHomeActivity extends AppCompatActivity implements GeoTask.Ge
 
                             ParseGeoPoint geoPoint = users.get(i).getParseGeoPoint("location");
 
+
                             users.get(i).put("status",getDriverStatus(geoPoint.toString())); // not saving in database
 
 
@@ -103,10 +104,15 @@ public class ManagerHomeActivity extends AppCompatActivity implements GeoTask.Ge
                             hm.put("driver_image", Integer.toString(R.drawable.delivery_man));
                             hm.put("driver_name", users.get(i).get("name").toString());
                             String status = users.get(i).get("status").toString();
-                            hm.put("driver_status", status);
 
-                            if (!status.equals("Offline")) {
+                            if (users.get(i).getBoolean("connected")) {
+
+                                hm.put("driver_status", status);
                                 hm.put("vehicle_status", users.get(i).get("vehicleStatus").toString());
+                                driversStatus.add(status);
+                            } else {
+                                hm.put("driver_status", "Offline");
+                                driversStatus.add("Offline");
                             }
                             /*String string = strings[e];
                             switch (e){
@@ -137,7 +143,7 @@ public class ManagerHomeActivity extends AppCompatActivity implements GeoTask.Ge
                             //arrayAdapter.add(users.get(i).get("name").toString());
                             driversUsername.add(users.get(i).getUsername());
                             driversName.add(users.get(i).get("name").toString());
-                            driversStatus.add(status);
+
                         }
                     }
                     createListView();

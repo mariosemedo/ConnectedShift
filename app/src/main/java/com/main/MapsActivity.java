@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -36,6 +37,7 @@ import static java.util.Arrays.asList;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private boolean displayed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         final String driver = intent.getStringExtra("username");
         ParseGeoPoint g = new ParseGeoPoint();
         final ArrayList<ParseGeoPoint> geoPointStore = new ArrayList<>(asList(g));
+        displayed = false;
 
         Runnable mapUpdate = new Runnable() {
             @Override
@@ -80,7 +83,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 String driverSelected = "";
                             for (int i = 0; i < users.size(); i++) {
 
-                                if(users.get(i).get("jobRole").toString().equals("driver")) {
+                                if (users.get(i).get("jobRole").toString().equals("driver") && users.get(i).getBoolean("connected")) {
 
                                     //ParseGeoPoint geoPoint = users.get(i).getParseGeoPoint("location");
                                     if (users.get(i).get("username").toString().equals(driver))
@@ -121,14 +124,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ParseGeoPoint position = entry.getValue();
             LatLng location = new LatLng(position.getLatitude(), position.getLongitude());
 
-            if(name.equals(driver))
+            if (name.equals(driver)) {
                 mMap.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.car2)).title(name));
+                if (!displayed) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+                    displayed = true;
+                }
+            }
             else
                 mMap.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.car3)).title(name));
 
+
             //mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
         }
-
 
 
         //Log.i("list1", geoPointStore.toString());

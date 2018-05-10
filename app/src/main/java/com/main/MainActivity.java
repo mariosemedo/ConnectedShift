@@ -79,7 +79,11 @@ public class MainActivity extends AppCompatActivity {
                     for(ParseObject object: objects){
 
                       String jobRole = object.get("jobRole").toString();
-                      changeActivity(jobRole);
+                        try {
+                            changeActivity(jobRole);
+                        } catch (ParseException e1) {
+                            e1.printStackTrace();
+                        }
                       //Log.i("findInBackgroundResult", object.get("jobRole").toString());
                     }
                   }
@@ -98,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
     }
   }
 
-  public void changeActivity(String jobRole){
+    public void changeActivity(String jobRole) throws ParseException {
 
     switch (jobRole){
       case "driver": {
@@ -106,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
         //Intent driverIntent = new Intent(MainActivity.this, DriverHomeActivity.class);
         driverIntent.putExtra("username", ParseUser.getCurrentUser().getUsername()); //Optional parameters
         driverIntent.putExtra("name", ParseUser.getCurrentUser().getString("name"));
+          ParseUser.getCurrentUser().put("connected", true);
+          ParseUser.getCurrentUser().save();
         MainActivity.this.startActivity(driverIntent);
         break;
     }
@@ -115,7 +121,8 @@ public class MainActivity extends AppCompatActivity {
         //Intent managerIntent = new Intent(MainActivity.this, test_activity.class);
         managerIntent.putExtra("username", ParseUser.getCurrentUser().getUsername()); //Optional parameters
         managerIntent.putExtra("name", ParseUser.getCurrentUser().getString("name"));
-
+          ParseUser.getCurrentUser().put("connected", true);
+          ParseUser.getCurrentUser().save();
         MainActivity.this.startActivity(managerIntent);
         break;
       }
